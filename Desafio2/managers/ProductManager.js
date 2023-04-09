@@ -2,7 +2,7 @@ import fs, { existsSync } from "fs";
 
 export default class ProductManager {
   constructor() {
-    this.path = "./files/productsss.json";
+    this.path = "./Desafio2/files/products.json";
   }
 
   //RETURN THE LIST OF PRODUCTS
