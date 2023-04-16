@@ -2,7 +2,7 @@ import fs, { existsSync } from "fs";
 
 export default class ProductManager {
   constructor() {
-    this.path = "./Desafio2/files/products.json";
+    this.path = "../Desafio3/files/products.json";
   }
 
   //RETURN THE LIST OF PRODUCTS
@@ -26,16 +26,13 @@ export default class ProductManager {
         const products = await this.getProducts();
         const exists = products.find((item) => item.code == product.code);
         if (exists == undefined) {
-          // const newProduct = product
           const lastPosition = products.length - 1;
           products.length == 0 ? (product.id = 1) : (product.id = products[lastPosition].id + 1);
-          // products.push(product);
           products.push(product);
-          // console.log("entre")
           await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
           return product;
         }
-        return console.log("Ya exists un producto con ese código");
+        return console.log("Ya existe un producto con ese código");
       }
       return console.log("Faltan datos por ingresar");
 
