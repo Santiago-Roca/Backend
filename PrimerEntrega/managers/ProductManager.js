@@ -37,7 +37,8 @@ export default class ProductManager {
           );
           return product;
         }
-        return console.log("Ya existe un producto con ese código");
+        // return console.log("Ya existe un producto con ese código");
+        return false;
       }
       return console.log("Faltan datos por ingresar");
     } catch (error) {
@@ -52,30 +53,26 @@ export default class ProductManager {
     if (exists != undefined) {
       return exists;
     }
-    console.log("Not found");
     return null;
   };
 
   //UPTADE PRODUCT
-  updateProduct = async (id, atributo, valor) => {
+  updateProduct = async (id, product) => {
     const products = await this.getProducts();
-    const exists = products.find((item) => item.id === id);
-    if (exists != undefined) {
-      if (Object.keys(exists).includes(atributo)) {
-        exists[atributo] = valor;
-        await fs.promises.writeFile(
-          this.path,
-          JSON.stringify(products, null, "\t")
-        );
-        console.log("Cambio realizado correctamente!");
-      } else {
-        console.log("El producto no contiene esa propiedad");
+    const exists = products.findIndex((item) => item.id === id);
+    if (exists != -1) {
+      const existCode = products.find((item) => item.code === product.code);
+      if (existCode == undefined) {
+        product.id = id
+        products[exists] = product;
+        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+        return product
       }
-      return exists;
+      return false;
     }
-    console.log("Not found");
-    return null;
+    return 'notFound';
   };
+
 
   //DELETE A PRODUCT
   deleteProduct = async (id) => {
@@ -83,14 +80,10 @@ export default class ProductManager {
     const exists = products.find((item) => item.id === id);
     if (exists != undefined) {
       products.splice(products.indexOf(exists), 1);
-      await fs.promises.writeFile(
-        this.path,
-        JSON.stringify(products, null, "\t")
-      );
-    } else {
-      console.log("Product not found");
-      return null;
+      await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+      return exists;
     }
+    return false;
   };
 
   //VALIDATING DATA:
