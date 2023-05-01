@@ -1,0 +1,35 @@
+[
+  {
+    "title": "Shampoo",
+    "description": "limpieza",
+    "code": "abc1",
+    "price": 300,
+    "status": true,
+    "stock": 10,
+    "category": "Higiene",
+    "thumbnail": [],
+    "id": 1
+  },
+  {
+    "title": "Jabon",
+    "description": "limpieza",
+    "code": "abc2",
+    "price": 300,
+    "status": true,
+    "stock": 10,
+    "category": "Higiene",
+    "thumbnail": [],
+    "id": 2
+  },
+  {
+    "title": "Crema",
+    "description": "limpieza",
+    "code": "abc3",
+    "price": 300,
+    "status": true,
+    "stock": 10,
+    "category": "Higiene",
+    "thumbnail": [],
+    "id": 3
+  }
+]

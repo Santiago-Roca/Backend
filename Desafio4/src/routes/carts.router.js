@@ -25,7 +25,6 @@ router.post("/:cid/product/:pid", async (req, res) => {
     if (isNaN(productId)) return res.status(404).send({ status: "error", message: "Product ID must be a number!" });
     if (!await cartManager.addProductCart(cartId, productId)) return res.status(404).send({ status: "error", message: "Cart not found!" });
     res.send({ status: "succes", message: "Product Added on cart" })
-
 });
 
 //GET BY ID

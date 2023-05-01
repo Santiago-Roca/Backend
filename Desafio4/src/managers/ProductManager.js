@@ -1,17 +1,17 @@
 import fs, { existsSync } from "fs";
+import __dirname from "../utils.js";
 
 export default class ProductManager {
   constructor() {
-    this.path = "../PrimerEntrega/files/products.json";
+    this.path = `${__dirname}/files/products.json`;
   }
 
-  //RETURN THE LIST OF PRODUCTS
+  //READ PRODUCTS
   getProducts = async () => {
     try {
       if (fs.existsSync(this.path)) {
         const data = await fs.promises.readFile(this.path, "utf-8");
-        const products = JSON.parse(data);
-        return products;
+        return JSON.parse(data);
       }
       return [];
     } catch (error) {
@@ -19,7 +19,7 @@ export default class ProductManager {
     }
   };
 
-  //ADDING A PRODUCT
+  //ADD PRODUCT
   addProduct = async (product) => {
     try {
       if (this.validateData(product)) {
@@ -30,6 +30,9 @@ export default class ProductManager {
           products.length == 0
             ? (product.id = 1)
             : (product.id = products[lastPosition].id + 1);
+          product.stock = 10;
+          product.status = true;
+          product.thumbnail = [];
           products.push(product);
           await fs.promises.writeFile(
             this.path,
@@ -37,10 +40,9 @@ export default class ProductManager {
           );
           return product;
         }
-        // return console.log("Ya existe un producto con ese código");
         return false;
       }
-      return console.log("Faltan datos por ingresar");
+      return false;
     } catch (error) {
       console.log(error);
     }
@@ -63,16 +65,18 @@ export default class ProductManager {
     if (exists != -1) {
       const existCode = products.find((item) => item.code === product.code);
       if (existCode == undefined) {
-        product.id = id
+        product.id = id;
         products[exists] = product;
-        await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
-        return product
+        await fs.promises.writeFile(
+          this.path,
+          JSON.stringify(products, null, "\t")
+        );
+        return product;
       }
       return false;
     }
-    return 'notFound';
+    return "notFound";
   };
-
 
   //DELETE A PRODUCT
   deleteProduct = async (id) => {
@@ -80,7 +84,10 @@ export default class ProductManager {
     const exists = products.find((item) => item.id === id);
     if (exists != undefined) {
       products.splice(products.indexOf(exists), 1);
-      await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"));
+      await fs.promises.writeFile(
+        this.path,
+        JSON.stringify(products, null, "\t")
+      );
       return exists;
     }
     return false;
