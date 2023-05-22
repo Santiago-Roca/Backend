@@ -1,11 +1,15 @@
 import express from "express";
 import handlebars from "express-handlebars";
+import mongoose from "mongoose";
+import { Server } from "socket.io";
+
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
+import registerChatHandler from "./listeners/chatHandler.js";
+import realTimeProducts from "./listeners/realTimeHandler.js";
+
 import __dirname from "./utils.js";
-import { Server } from "socket.io";
-import ProductManager from "./managers/ProductManager.js";
 
 const app = express();
 
@@ -23,8 +27,11 @@ const server = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
 
-//Server de Socket
 const io = new Server(server);
+
+const connection = mongoose.connect(
+  "mongodb+srv://santiroca88:SANtiago88@cluster0.xhslwvl.mongodb.net/ecommerce?retryWrites=true&w=majority"
+);
 
 app.use((req, res, next) => {
   req.io = io;
@@ -35,9 +42,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
-//Escuchador de eventos
 io.on("connection", async (socket) => {
-  console.log("Nuevo socket conectado");
-  const products = await new ProductManager().getProducts()
-  socket.emit("products", products)
+  registerChatHandler(io, socket);
+  realTimeProducts(io, socket);
 });
