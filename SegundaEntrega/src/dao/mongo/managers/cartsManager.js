@@ -13,6 +13,15 @@ export default class CartsManager {
     return cartModel.create(cart);
   };
 
+  addProductCart = (cartId, productId) => {
+    const cart = this.getCartById(cartId)
+    cart.products.push({ product: productId })
+    // cartModel.updateOne({_id: cartId})
+    this.updateCart(cartId, cart)
+    return cart;
+
+  }
+
   updateCart = (id, cart) => {
     return cartModel.findByIdAndUpdate(id, { $set: cart });
   };
