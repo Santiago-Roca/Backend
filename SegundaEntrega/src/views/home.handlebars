@@ -16,7 +16,9 @@
           <br />
           ID:
           {{this._id}}
-          <br /><br /></p>
+          <br />
+          <button>Add to cart</button>
+          <br /></p>
       {{/each}}
     </ul>
   {{else}}
@@ -24,13 +26,15 @@
   {{/if}}
 
   {{#if hasPrevPage}}
-    <a href="/?page={{prevPage}}"><button>Anterior</button></a>
+    <a href="/products/?page={{prevPage}}&limit={{limit}}"><button
+      >Anterior</button></a>
   {{/if}}
 
   {{page}}
 
   {{#if hasNextPage}}
-    <a href="/?page={{nextPage}}"><button>Siguiente</button></a>
+    <a href="/products/?page={{nextPage}}&limit={{limit}}"><button
+      >Siguiente</button></a>
   {{/if}}
 </div>
 

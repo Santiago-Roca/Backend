@@ -1,6 +1,7 @@
-import { Router } from "express";
+import { Router, json } from "express";
 import CartsManager from "../dao/mongo/managers/cartsManager.js";
 import ProductManager from "../dao/mongo/managers/ProductManager.js";
+import cartModel from "../dao/mongo/models/cart.js";
 
 const router = Router();
 
@@ -34,20 +35,107 @@ router.post("/", async (req, res) => {
 router.post("/:cid/product/:pid", async (req, res) => {
     const { cid } = req.params
     const { pid } = req.params
-    const cartExists = await cartManager.getCartById({ _id: cid })
-    if (!cartExists) return res.status(404).send({ status: "error", error: "Cart not found" });
-    const productExists = await productManager.getProductBy({ _id: pid })
-    if (!productExists) return res.status(404).send({ status: "error", error: "Product not found" });
+    try {
+        const cartExists = await cartManager.getCartById({ _id: cid })
+        const productExistsInCart = await cartManager.getCartById({ _id: cid, "products.product": { _id: pid } })
+        if (cartExists) {
+            if (productExistsInCart) {
+                cartExists.products.map(async (item) => {
+                    if (item.product._id == pid) {
+                        let cantidad = item.quantity + 1
+                        await cartModel.updateOne({ _id: cid, "products.product": { _id: pid } }, { $set: { "products.$.quantity": cantidad } })
+                    }
+                })
+                return res.send({ status: "success", message: "Product Added on cart" })
+            } else {
+                const productExists = await productManager.getProductBy({ _id: pid })
+                if (productExists) {
+                    await cartManager.addProductCart(cid, pid);
+                    return res.send({ status: "success", message: "Product Added on cart" })
+                }
+                return res.status(400).send({ status: "error", message: "Product not found" })
+            }
+        }
+        return res.status(400).send({ status: "error", message: "Cart not found" })
 
-    cartExists.products.push({ product: pid })
+    } catch (error) {
+        console.log(error)
+    }
+});
 
-    // cartManager.updateCart({_id: cid}, cartExists)
-    // productManager.addProductCart(cid, pid)
-    // res.send({ status: "success", payload: cartExists })
-    if (!await cartManager.addProductCart(cartId, productId)) return res.status(404).send({ status: "error", message: "Cart not found!" });
+//PUT (Actualizar Quantity)
+router.put("/:cid/product/:pid", async (req, res) => {
+    const { cid } = req.params
+    const { pid } = req.params
+    const { quantity } = req.body
+    try {
+        if (!quantity) {
+            return res.status(400).send({ status: "error", message: "Quantity not found" })
+        }
+        if (isNaN((parseInt(quantity)))) {
+            return res.status(400).send({ status: "error", message: "Quantity must be a number" })
+        }
+        const cartExists = await cartManager.getCartById({ _id: cid })
+        const productExistsInCart = await cartManager.getCartById({ _id: cid, "products.product": { _id: pid } })
+        if (cartExists) {
+            if (productExistsInCart) {
+                cartExists.products.map(async (item) => {
+                    if (item.product._id == pid) {
+                        let cantidad = quantity
+                        await cartModel.updateOne({ _id: cid, "products.product": { _id: pid } }, { $set: { "products.$.quantity": cantidad } })
+                    }
+                })
+                return res.send({ status: "success", message: "Quantity updated in cart" })
+            }
+            return res.status(400).send({ status: "error", message: "Product not found" })
 
-    res.send({ status: "succes", message: "Product Added on cart" })
+        }
+        return res.status(400).send({ status: "error", message: "Cart not found" })
 
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+//DELETE (Product on cart)
+router.delete("/:cid/product/:pid", async (req, res) => {
+    const { cid } = req.params
+    const { pid } = req.params
+    try {
+        const cartExists = await cartManager.getCartById({ _id: cid })
+        const productExistsInCart = await cartManager.getCartById({ _id: cid, "products.product": { _id: pid } })
+        if (cartExists) {
+            if (productExistsInCart) {
+                cartExists.products.map(async (item) => {
+                    if (item.product._id == pid) {
+                        await cartModel.updateOne({ _id: cid }, { $pull: { products: { product: pid } } })
+                    }
+                })
+                return res.send({ status: "success", message: "Product Deleted" })
+            }
+            return res.status(400).send({ status: "error", message: "Product not found" })
+        }
+        return res.status(400).send({ status: "error", message: "Cart not found" })
+
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+//DELETE (All Products in cart)
+router.delete("/:cid", async (req, res) => {
+    const { cid } = req.params
+    try {
+        const cartExists = await cartManager.getCartById({ _id: cid })
+        if (cartExists) {
+            await cartModel.updateOne({ _id: cid }, { $pull: { products: {} } })
+            return res.send({ status: "success", message: "Products Deleted" })
+        }
+        return res.status(400).send({ status: "error", message: "Cart not found" })
+
+    } catch (error) {
+        console.log(error)
+    }
 });
 
 export default router;

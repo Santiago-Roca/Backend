@@ -1,7 +1,6 @@
 import { Router } from "express";
-import productModel from "../dao/mongo/models/product.js";
 import ProductsManager from "../dao/mongo/managers/ProductManager.js";
-import realTimeProducts from "../../../DesafioComplementario/src/listeners/realTimeHandler.js";
+import productModel from "../dao/mongo/models/product.js";
 
 const router = Router();
 const productManager = new ProductsManager();
@@ -13,8 +12,14 @@ router.get("/", async (req, res) => {
         const { limit = 10 } = req.query;
         const { sort } = req.query;
 
+        let ordenar = ''
+
+        if (sort == 1 || sort == -1 || sort == 'asc' || sort == 'desc') {
+            ordenar = { price: sort }
+        }
+
         const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages, ...rest } = await productModel.paginate({}, {
-            page, limit, sort: { price: sort }, lean: true
+            page, limit, sort: ordenar, lean: true
         });
 
         let urlPrevPage = null;
@@ -55,8 +60,14 @@ router.get("/:category", async (req, res) => {
         const { sort } = req.query;
         const { category } = req.params;
 
+        let ordenar = ''
+
+        if (sort == 1 || sort == -1 || sort == 'asc' || sort == 'desc') {
+            ordenar = { price: sort }
+        }
+
         const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages, ...rest } = await productModel.paginate({ category }, {
-            page, limit, sort: { price: sort }, lean: true
+            page, limit, sort: ordenar, lean: true
         });
 
         let urlPrevPage = null;
@@ -95,12 +106,8 @@ router.get("/:pid", async (req, res) => {
         const pid = req.params.pid;
         const productId = await productManager.getProductBy({ _id: pid });
         console.log(productId);
-        if (!productId)
-            return res
-                .status(404)
-                .send({ status: "error", error: "Product not found" });
+        if (!productId) return res.status(404).send({ status: "error", error: "Product not found" });
         res.send({ status: "success", payload: productId });
-        // res.send(`{${status}: success, ${payload}: ${productId}} <br/>`);
     } catch (error) {
         console.log(error);
     }
@@ -111,9 +118,7 @@ router.post("/", async (req, res) => {
     try {
         const { title, description, code, price, category } = req.body;
         if (!title || !description || !code || !price || !category)
-            return res
-                .status(400)
-                .send({ status: "error", error: "Incomplete Values" });
+            return res.status(400).send({ status: "error", error: "Incomplete Values" });
         const product = { title, description, code, price, category };
         await productManager.createProduct(product);
         res.sendStatus(201);

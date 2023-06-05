@@ -1,86 +1,64 @@
 import { Router } from "express";
 import ProductsManager from "../dao/mongo/managers/ProductManager.js";
 import productModel from "../dao/mongo/models/product.js";
+import CartsManager from "../dao/mongo/managers/cartsManager.js";
 
 const router = new Router();
 
 const productManager = new ProductsManager();
+const cartManager = new CartsManager()
 
-// VIEJO
-// router.get("/", async (req, res) => {
-//   const products = await productManager.getProducts();
-//   res.render("home", { products });
-// });
+//GET PRODUCTS
+router.get("/products", async (req, res) => {
+  try {
+    const { page = 1 } = req.query;
+    const { limit = 10 } = req.query;
+    const { sort } = req.query;
 
-// VIEJO
-router.get("/", async (req, res) => {
-  const { params } = req.params;
-  const products = await productManager.getProducts({ params });
-  console.log(products);
-  res.render("home", { products });
+    let ordenar = ''
+
+    if (sort == 1 || sort == -1 || sort == 'asc' || sort == 'desc') {
+      ordenar = { price: sort }
+    }
+
+    const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, totalPages, ...rest } = await productModel.paginate({}, {
+      page, limit, sort: ordenar, lean: true
+    });
+
+    const products = docs;
+    res.render("home", {
+      products,
+      hasPrevPage,
+      hasNextPage,
+      prevPage,
+      nextPage,
+      page: rest.page,
+      limit: rest.limit,
+    });
+
+  } catch (error) {
+    res.status(500).send({ status: "error", message: "Error al obtener productos" });
+  }
 });
 
-router.get("/:params", async (req, res) => {
-  const { params } = req.params;
-  const products = await productManager.getProducts({ title: params });
-  res.render("home", { products });
+//GET CART BY ID
+router.get("/cart/:cid", async (req, res) => {
+  try {
+    const { cid } = req.params
+    const cartId = await cartManager.getCartById({ _id: cid })
+    if (!cartId) return res.status(404).send({ status: "error", error: "Cart not found" });
+    res.render("cart", cartId)
+  } catch (error) {
+    console.log(error)
+  }
 });
 
-router.get("/pid", async (req, res) => {
-  console.log("Entre");
-  const pid = req.params.pid;
-  const products = await productManager.getProductBy({ _id: pid });
-  console.log(products);
-  // res.render("home", {products});
-  // if (!productId) return res.status(404).send({ status: 'error', error: 'Product not found' });
-  // res.send({ status: 'success', payload: productId });
-  // res.render("home", {products});
-});
-
-// const product = await companiesService.getCompanyBy({ _id: cid });
-// if (!company)
-//   return res.status(404).send({ status: 'error', error: 'Company not found' });
-// res.send({ status: 'success', payload: company });
-
-// router.get('/:cid', async (req, res) => {
-//   const { cid } = req.params;
-//   const company = await companiesService.getCompanyBy({ _id: cid });
-//   if (!company)
-//     return res.status(404).send({ status: 'error', error: 'Company not found' });
-//   res.send({ status: 'success', payload: company });
-// });
-
-// router.get("/", async (req, res) => {
-// const { page = 1 } = req.query;
-// const { limit = 5 } = req.query;
-// const { params } = req.params;
-// const result = await productManager.getProducts()
-// if(params){
-//   const result = await productManager.getProducts(params);
-// }
-
-// res.render("home", {result});
-
-// const { docs, hasPrevPage, hasNextPage, prevPage, nextPage, ...rest } =
-//   await productModel.paginate({}, { page, limit, lean: true });
-
-// // console.log(await productModel.paginate({}, { page, limit }));
-// const products = docs;
-// res.render("home", {
-//   products,
-//   hasPrevPage,
-//   hasNextPage,
-//   prevPage,
-//   nextPage,
-//   page: rest.page,
-//   limit: rest.limit,
-// });
-// });
-
+//Real Time Products
 router.get("/realtimeproducts", async (req, res) => {
   res.render("realtimeproducts");
 });
 
+//CHAT
 router.get("/chat", (req, res) => {
   res.render("chat");
 });
