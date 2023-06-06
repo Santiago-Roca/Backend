@@ -2,6 +2,7 @@ import { Router } from "express";
 import ProductsManager from "../dao/mongo/managers/ProductManager.js";
 import productModel from "../dao/mongo/models/product.js";
 import CartsManager from "../dao/mongo/managers/cartsManager.js";
+import { privacy } from "../middleware/auth.js";
 
 const router = new Router();
 
@@ -9,7 +10,7 @@ const productManager = new ProductsManager();
 const cartManager = new CartsManager()
 
 //GET PRODUCTS
-router.get("/products", async (req, res) => {
+router.get("/products", privacy("PRIVATE"), async (req, res) => {
   try {
     const { page = 1 } = req.query;
     const { limit = 10 } = req.query;
@@ -34,6 +35,7 @@ router.get("/products", async (req, res) => {
       nextPage,
       page: rest.page,
       limit: rest.limit,
+      user: req.session.user
     });
 
   } catch (error) {
@@ -62,5 +64,22 @@ router.get("/realtimeproducts", async (req, res) => {
 router.get("/chat", (req, res) => {
   res.render("chat");
 });
+
+//REGISTER
+router.get('/register', privacy("NO_AUTHENTICATED"), (req, res) => {
+  res.render('register')
+})
+
+//LOGIN
+router.get('/login', privacy("NO_AUTHENTICATED"), (req, res) => {
+  res.render('login')
+})
+
+
+// router.get('/profile', (req, res) => {
+//   res.render('profile', {
+//       user: req.session.user
+//   })
+// })
 
 export default router;

@@ -1,11 +1,14 @@
 import express from "express";
 import handlebars from "express-handlebars";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
+import sessionsRouter from "./routes/session.router.js"
 import registerChatHandler from "./listeners/chatHandler.js";
 import realTimeProducts from "./listeners/realTimeHandler.js";
 
@@ -33,6 +36,18 @@ const connection = mongoose.connect(
   "mongodb+srv://santiroca88:SANtiago88@cluster0.xhslwvl.mongodb.net/ecommerce?retryWrites=true&w=majority"
 );
 
+app.use(session({
+  store: new MongoStore({
+    mongoUrl:
+      "mongodb+srv://santiroca88:SANtiago88@cluster0.xhslwvl.mongodb.net/ecommerce?retryWrites=true&w=majority",
+    ttl: 3600,
+  }),
+  secret: "CoderSecret",
+  resave: false,
+  saveUninitialized: false,
+})
+);
+
 app.use((req, res, next) => {
   req.io = io;
   next();
@@ -40,6 +55,7 @@ app.use((req, res, next) => {
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
+app.use("/api/session", sessionsRouter);
 app.use("/", viewsRouter);
 
 io.on("connection", async (socket) => {
