@@ -4,7 +4,7 @@ import passport from 'passport';
 const router = Router();
 
 //REGISTER
-router.post('/register', passport.authenticate('register', { failureRedirect: '/api/sessions/registerFail', failureMessage: true }), async (req, res) => {
+router.post('/register', passport.authenticate('register', { failureRedirect: '/api/session/registerFail', failureMessage: true }), async (req, res) => {
     res.send({ status: "success", message: "Registered" });
 })
 
@@ -15,7 +15,7 @@ router.get('/registerFail', (req, res) => {
 })
 
 //LOGIN
-router.post('/login', passport.authenticate('login', { failureRedirect: '/api/sessions/loginFail', failureMessage: true }), async (req, res) => {
+router.post('/login', passport.authenticate('login', { failureRedirect: '/api/session/loginFail', failureMessage: true }), async (req, res) => {
     req.session.user = {
         name: req.user.name,
         role: req.user.role,
