@@ -3,7 +3,6 @@ export const privacy = (privacyType) => {
         const { user } = req.session;
         switch (privacyType) {
             case "PRIVATE":
-                //Esta validación es para dejar pasar a los que se hayan logueado.
                 if (user) next();
                 else res.redirect('/login')
                 break;

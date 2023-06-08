@@ -1,5 +1,12 @@
 <div>
-  <p>Hola {{user.name}}</p>
+  <p>{{user.name}}
+    <br />
+    role:{{user.role}}
+    <br />
+    email:{{user.email}}
+  </p>
+
+  <button id="botonLogout">Logout</button>
   {{#if products}}
     <h1>Lista de productos</h1>
     <ul>
@@ -39,4 +46,4 @@
   {{/if}}
 </div>
 
-{{!-- <script src="/js/home.js"></script> --}}
+<script src="/js/home.js"></script>

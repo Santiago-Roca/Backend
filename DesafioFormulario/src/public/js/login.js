@@ -15,7 +15,7 @@ form.addEventListener('submit', async (evt) => {
 
     const responseData = await response.json();
     console.log(responseData);
-    if (responseData.status === 'login success') {
+    if (responseData.status === 'Login success') {
         window.location.replace('/products');
     }
 }) 

@@ -4,6 +4,8 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
+import passport from "passport";
+import initializePassportStrategies from "./config/passport.config.js";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -52,6 +54,9 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
+
+app.use(passport.initialize())
+initializePassportStrategies()
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
