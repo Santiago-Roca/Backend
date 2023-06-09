@@ -1,6 +1,7 @@
 import passport from 'passport';
 import local from 'passport-local';
 import userModel from '../dao/mongo/models/user.js';
+import gitHubStrategies from "passport-github2"
 import { createHash, validatePassword } from '../utils.js';
 
 const LocalStrategy = local.Strategy;
@@ -56,6 +57,30 @@ const initializePassportStrategies = () => {
         };
         return done(null, user);
     }));
+
+    //PASSPORT GITHUB
+    passport.use("github", new gitHubStrategies({
+        clientID: "Iv1.af249d5cc59255c7",
+        clientSecret: "cd9942468e4b3f31c4e82d8440800d8b593a05aa",
+        callbackURL: "http://localhost:8080/api/session/githubcallback"
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+            const { name, email } = profile._json
+            const user = await userModel.findOne({ email })
+            if (!user) {
+                const newUser = {
+                    first_name: name,
+                    email,
+                    password: ''
+                }
+                const result = await userModel.create(newUser)
+                done(null, result)
+            }
+            done(null, user)
+        } catch (error) {
+            done(error)
+        }
+    }))
 
     //SERIALIZE Y DESEARIALIZE
     passport.serializeUser(function (user, done) {
