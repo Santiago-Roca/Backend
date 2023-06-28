@@ -1,7 +1,7 @@
 import { Router } from "express";
-import ProductsManager from "../dao/mongo/managers/ProductManager.js";
+import ProductsManager from "../dao/mongo/managers/product.js";
 import productModel from "../dao/mongo/models/product.js";
-import CartsManager from "../dao/mongo/managers/cartsManager.js";
+import CartsManager from "../dao/mongo/managers/carts.js";
 import { privacy } from "../middleware/auth.js";
 
 const router = new Router();
