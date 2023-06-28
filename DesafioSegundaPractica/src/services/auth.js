@@ -21,7 +21,6 @@ export const passportCall = (strategy, options = {}) => {
                 return res.sendServerError();
             }
             if (!user) {
-                //¿Qué significa el que no haya encontrado user en cada caso?
                 switch (options.strategyType) {
                     case 'jwt':
                         req.error = info.message ? info.message : info.toString;

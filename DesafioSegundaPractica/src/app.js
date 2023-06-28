@@ -3,9 +3,6 @@ import handlebars from "express-handlebars";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
-// import session from "express-session";
-// import MongoStore from "connect-mongo";
-// import passport from "passport";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -41,24 +38,10 @@ const connection = mongoose.connect(
   "mongodb+srv://santiroca88:SANtiago88@cluster0.xhslwvl.mongodb.net/ecommerce?retryWrites=true&w=majority"
 );
 
-// app.use(session({
-//   store: new MongoStore({
-//     mongoUrl:
-//       "mongodb+srv://santiroca88:SANtiago88@cluster0.xhslwvl.mongodb.net/ecommerce?retryWrites=true&w=majority",
-//     ttl: 3600,
-//   }),
-//   secret: "CoderSecret",
-//   resave: false,
-//   saveUninitialized: false,
-// })
-// );
-
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
-
-// app.use(passport.initialize())
 
 const sessionRouter = new SessionRouter()
 
