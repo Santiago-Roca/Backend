@@ -12,6 +12,7 @@ export default class SessionRouter extends BaseRouter {
         })
 
         this.get('/current', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), (req, res) => {
+            if (!req.user) return res.sendUnauthorized("User not logged in")
             res.send(req.user)
         })
     }

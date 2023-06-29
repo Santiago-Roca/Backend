@@ -23,6 +23,7 @@ const initializePassportStrategies = () => {
                 lastName,
                 email,
                 role,
+                cart,
                 age,
                 password: hashedPassword
             }

@@ -2,7 +2,6 @@ import { Router } from "express";
 import ProductsManager from "../dao/mongo/managers/product.js";
 import productModel from "../dao/mongo/models/product.js";
 import CartsManager from "../dao/mongo/managers/carts.js";
-import { privacy } from "../middleware/auth.js";
 
 const router = new Router();
 
@@ -10,7 +9,7 @@ const productManager = new ProductsManager();
 const cartManager = new CartsManager()
 
 //GET PRODUCTS
-router.get("/products", privacy("PRIVATE"), async (req, res) => {
+router.get("/products", async (req, res) => {
   try {
     const { page = 1 } = req.query;
     const { limit = 10 } = req.query;
@@ -66,12 +65,12 @@ router.get("/chat", (req, res) => {
 });
 
 //REGISTER
-router.get('/register', privacy("NO_AUTHENTICATED"), (req, res) => {
+router.get('/register', (req, res) => {
   res.render('register')
 })
 
 //LOGIN
-router.get('/login', privacy("NO_AUTHENTICATED"), (req, res) => {
+router.get('/login', (req, res) => {
   res.render('login')
 })
  
