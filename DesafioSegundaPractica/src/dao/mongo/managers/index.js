@@ -1,7 +1,7 @@
-import UsersManager from "./user.js";
-import CartsManager from "./carts.js";
-import ProductsManager from "./product.js";
-import MessagesManager from "./message.js";
+import UsersManager from "./userManager.js";
+import CartsManager from "./cartsManager.js";
+import ProductsManager from "./ProductManager.js";
+import MessagesManager from "./messagesManager.js";
 
 export const userServices = new UsersManager();
 export const cartServices = new CartsManager();

@@ -15,7 +15,7 @@ const schema = new mongoose.Schema({
     cart: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "Carts",
-      },
+    },
 }, { timestamps: true })
 
 const userModel = mongoose.model(collection, schema);

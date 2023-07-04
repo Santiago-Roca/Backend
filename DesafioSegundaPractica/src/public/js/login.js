@@ -5,7 +5,7 @@ form.addEventListener('submit', async (evt) => {
     const data = new FormData(form)
     const obj = {}
     data.forEach((value, key) => (obj[key] = value));
-    const response = await fetch('/api/session/login', {
+    const response = await fetch('/api/sessions/login', {
         method: 'POST',
         body: JSON.stringify(obj),
         headers: {
@@ -14,8 +14,7 @@ form.addEventListener('submit', async (evt) => {
     });
 
     const responseData = await response.json();
-    console.log(responseData);
-    if (responseData.status === 'Login success') {
+    if (responseData.status === 'success') {
         window.location.replace('/products');
     }
 }) 

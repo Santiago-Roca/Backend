@@ -6,14 +6,15 @@ import cookieParser from "cookie-parser";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
-import viewsRouter from "./routes/views.router.js";
-import SessionRouter from "./routes/Sessions.router.js";
+import ViewsRouter from "./routes/views.router.js";
+import SessionRouter from "./routes/session.router.js";
 
 import registerChatHandler from "./listeners/chatHandler.js";
 import realTimeProducts from "./listeners/realTimeHandler.js";
 
 import initializePassportStrategies from "./config/passport.config.js";
 import __dirname from "./utils.js";
+// import ViewsRouter from "./routes/views.router.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -44,11 +45,14 @@ app.use((req, res, next) => {
 });
 
 const sessionRouter = new SessionRouter()
+const viewsRouter = new ViewsRouter()
 
+// app.use("/api/products", productsRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", sessionRouter.getRouter());
-app.use("/", viewsRouter);
+// app.use("/", viewsRouter);
+app.use("/", viewsRouter.getRouter());
 
 io.on("connection", async (socket) => {
   registerChatHandler(io, socket);
