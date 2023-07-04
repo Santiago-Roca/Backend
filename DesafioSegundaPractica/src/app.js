@@ -14,7 +14,6 @@ import realTimeProducts from "./listeners/realTimeHandler.js";
 
 import initializePassportStrategies from "./config/passport.config.js";
 import __dirname from "./utils.js";
-// import ViewsRouter from "./routes/views.router.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -51,7 +50,6 @@ const viewsRouter = new ViewsRouter()
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", sessionRouter.getRouter());
-// app.use("/", viewsRouter);
 app.use("/", viewsRouter.getRouter());
 
 io.on("connection", async (socket) => {
