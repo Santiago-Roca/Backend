@@ -20,4 +20,5 @@ export default class ProductsManager {
   deleteProduct = (id) => {
     return productModel.findByIdAndDelete(id);
   };
+
 }

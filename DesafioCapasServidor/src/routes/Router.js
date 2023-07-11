@@ -8,7 +8,6 @@ export default class BaseRouter {
     }
 
     init() { }
-
     getRouter = () => this.router;
 
     get(path, policies, ...callbacks) {
@@ -32,7 +31,6 @@ export default class BaseRouter {
         res.sendUnauthorized = error => res.status(400).send({ status: 'error', error })
         next();
     };
-
 
     //HANDLE POLICIES
     handlePolicies = policies => {

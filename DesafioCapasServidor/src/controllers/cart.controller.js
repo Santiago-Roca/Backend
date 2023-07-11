@@ -1,43 +1,37 @@
-import { Router, json } from "express";
-import CartsManager from "../dao/mongo/managers/cartsManager.js";
-import ProductManager from "../dao/mongo/managers/ProductManager.js";
 import cartModel from "../dao/mongo/models/cart.js";
+import {cartService} from "../services/index.js"
 
-const router = Router();
-
-const cartManager = new CartsManager();
-const productManager = new ProductManager()
-
-//GET CARTS
-router.get("/", async (req, res) => {
-    const carts = await cartManager.getCarts();
+//GET CARTS    
+const getCarts = async (req, res) => {
+    const carts = await cartService.getCarts();
     res.send({ status: "success", payload: carts });
-});
+}
 
 //GET CART BY ID
-router.get("/:cid", async (req, res) => {
+const getCartById = async (req, res) => {
     const { cid } = req.params
-    const cartId = await cartManager.getCartById({ _id: cid })
+    const cartId = await cartService.getCartById({ _id: cid })
     if (!cartId) return res.status(404).send({ status: "error", error: "Cart not found" });
     res.send({ status: "success", payload: cartId })
-});
+}
 
 //POST CART
-router.post("/", async (req, res) => {
+const createCart = async (req, res) => {
     const { products } = req.body;
     if (!products) return res.status(400).send({ status: "error", error: "Incomplete Values" })
     const cart = { products }
-    await cartManager.createCart(cart)
+    await cartService.createCart(cart)
     res.sendStatus(201);
-});
 
-//POST (Products on cart)
-router.post("/:cid/product/:pid", async (req, res) => {
+}
+
+//ADD PRODUCT ON CART
+const addProductCart = async (req, res) => {
     const { cid } = req.params
     const { pid } = req.params
     try {
-        const cartExists = await cartManager.getCartById({ _id: cid })
-        const productExistsInCart = await cartManager.getCartById({ _id: cid, "products.product": { _id: pid } })
+        const cartExists = await cartService.getCartById({ _id: cid })
+        const productExistsInCart = await cartService.getCartById({ _id: cid, "products.product": { _id: pid } })
         if (cartExists) {
             if (productExistsInCart) {
                 cartExists.products.map(async (item) => {
@@ -50,7 +44,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
             } else {
                 const productExists = await productManager.getProductBy({ _id: pid })
                 if (productExists) {
-                    await cartManager.addProductCart(cid, pid);
+                    await cartService.addProductCart(cid, pid);
                     return res.send({ status: "success", message: "Product Added on cart" })
                 }
                 return res.status(400).send({ status: "error", message: "Product not found" })
@@ -61,10 +55,10 @@ router.post("/:cid/product/:pid", async (req, res) => {
     } catch (error) {
         console.log(error)
     }
-});
+}
 
 //PUT (Actualizar Quantity)
-router.put("/:cid/product/:pid", async (req, res) => {
+const updateQuantity = async (req, res) => {
     const { cid } = req.params
     const { pid } = req.params
     const { quantity } = req.body
@@ -75,8 +69,8 @@ router.put("/:cid/product/:pid", async (req, res) => {
         if (isNaN((parseInt(quantity)))) {
             return res.status(400).send({ status: "error", message: "Quantity must be a number" })
         }
-        const cartExists = await cartManager.getCartById({ _id: cid })
-        const productExistsInCart = await cartManager.getCartById({ _id: cid, "products.product": { _id: pid } })
+        const cartExists = await cartService.getCartById({ _id: cid })
+        const productExistsInCart = await cartService.getCartById({ _id: cid, "products.product": { _id: pid } })
         if (cartExists) {
             if (productExistsInCart) {
                 cartExists.products.map(async (item) => {
@@ -95,15 +89,15 @@ router.put("/:cid/product/:pid", async (req, res) => {
     } catch (error) {
         console.log(error)
     }
-});
+}
 
 //DELETE (Product on cart)
-router.delete("/:cid/product/:pid", async (req, res) => {
+const deleteProductCart = async (req, res) => {
     const { cid } = req.params
     const { pid } = req.params
     try {
-        const cartExists = await cartManager.getCartById({ _id: cid })
-        const productExistsInCart = await cartManager.getCartById({ _id: cid, "products.product": { _id: pid } })
+        const cartExists = await cartService.getCartById({ _id: cid })
+        const productExistsInCart = await cartService.getCartById({ _id: cid, "products.product": { _id: pid } })
         if (cartExists) {
             if (productExistsInCart) {
                 cartExists.products.map(async (item) => {
@@ -120,13 +114,13 @@ router.delete("/:cid/product/:pid", async (req, res) => {
     } catch (error) {
         console.log(error)
     }
-});
+}
 
 //DELETE (All Products in cart)
-router.delete("/:cid", async (req, res) => {
+const deleteAllProducts = async (req, res) => {
     const { cid } = req.params
     try {
-        const cartExists = await cartManager.getCartById({ _id: cid })
+        const cartExists = await cartService.getCartById({ _id: cid })
         if (cartExists) {
             await cartModel.updateOne({ _id: cid }, { $pull: { products: {} } })
             return res.send({ status: "success", message: "Products Deleted" })
@@ -136,6 +130,8 @@ router.delete("/:cid", async (req, res) => {
     } catch (error) {
         console.log(error)
     }
-});
+}
 
-export default router;
+export default {
+    getCarts, getCartById, createCart, addProductCart, updateQuantity, deleteAllProducts, deleteProductCart
+}

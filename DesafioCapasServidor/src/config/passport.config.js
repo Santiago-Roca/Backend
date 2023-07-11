@@ -3,7 +3,8 @@ import { Strategy, ExtractJwt } from "passport-jwt";
 import local from 'passport-local';
 
 import gitHubStrategies from "passport-github2"
-import { userServices } from "../dao/mongo/managers/index.js"
+import {userService} from "../services/index.js"
+
 import { createHash, validatePassword } from "../services/auth.js";
 import { cookieExtractor } from "../utils.js";
 
@@ -16,7 +17,7 @@ const initializePassportStrategies = () => {
     passport.use("register", new LocalStrategy({ passReqToCallback: true, usernameField: 'email' }, async (req, email, password, done) => {
         try {
             const { firstName, lastName, role, age, cart } = req.body;
-            const exists = await userServices.getUserBy({ email })
+            const exists = await userService.getUserBy({ email })
             if (exists) return done(null, false, { message: "User already exists" })
             const hashedPassword = await createHash(password)
             const newUser = {
@@ -28,7 +29,7 @@ const initializePassportStrategies = () => {
                 age,
                 password: hashedPassword
             }
-            const result = await userServices.createUser(newUser)
+            const result = await userService.createUser(newUser)
             return done(null, result)
         } catch (error) {
             return done(error)
@@ -47,7 +48,7 @@ const initializePassportStrategies = () => {
                 }
                 return done(null, resultUser)
             }
-            const user = await userServices.getUserBy({ email })
+            const user = await userService.getUserBy({email})
             if (!user) return done(null, false, { message: 'User not found' })
             const isValidPassword = await validatePassword(password, user.password)
             if (!isValidPassword) return done(null, false, { message: "Invalid password" })
@@ -73,7 +74,7 @@ const initializePassportStrategies = () => {
     }, async (accessToken, refreshToken, profile, done) => {
         try {
             const { name, email } = profile._json
-            const user = await userServices.getUserBy({ email })
+            const user = await userService.getUserBy({ email })
 
             if (!user) {
                 const newUser = {
@@ -81,7 +82,7 @@ const initializePassportStrategies = () => {
                     email,
                     password: ''
                 }
-                const result = await userServices.createUser(newUser)
+                const result = await userService.createUser(newUser)
                 done(null, result)
             }
             done(null, user)
