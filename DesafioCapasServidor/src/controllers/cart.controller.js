@@ -1,9 +1,9 @@
-import cartModel from "../dao/mongo/models/cart.js";
-import {cartService} from "../services/index.js"
+import cartModel from "../dao/models/cart.model.js";
+import { cartService } from "../services/repositories.js"
 
 //GET CARTS    
 const getCarts = async (req, res) => {
-    const carts = await cartService.getCarts();
+    const carts = await cartService.getAllCarts()
     res.send({ status: "success", payload: carts });
 }
 
@@ -20,12 +20,12 @@ const createCart = async (req, res) => {
     const { products } = req.body;
     if (!products) return res.status(400).send({ status: "error", error: "Incomplete Values" })
     const cart = { products }
-    await cartService.createCart(cart)
-    res.sendStatus(201);
+    const result = await cartService.createCart(cart)
+    res.send({ status: "Success", payload: result })
 
 }
 
-//ADD PRODUCT ON CART
+//POST PRODUCT ON CART
 const addProductCart = async (req, res) => {
     const { cid } = req.params
     const { pid } = req.params

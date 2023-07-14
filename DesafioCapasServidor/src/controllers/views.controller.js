@@ -1,5 +1,5 @@
-import productModel from "../dao/mongo/models/product.js";
-import cartService from "../services/carts.services.js";
+import productModel from "../dao/models/product.model.js";
+import cartService from "../services/Repositories/CartRepository.js";
 
 //GET PRODUCTS
 const getProducts = async (req, res) => {

@@ -1,23 +1,23 @@
-import productModel from "../models/product.js";
+import productModel from "../dao/models/product.model.js"
 
 export default class ProductsManager {
-  getProducts = (params) => {
+  get = (params) => {
     return productModel.find(params).lean();
   };
 
-  getProductBy = (params) => {
+  getBy = (params) => {
     return productModel.findOne(params).lean();
   };
 
-  createProduct = (product) => {
+  save = (product) => {
     return productModel.create(product);
   };
 
-  updateProduct = (id, product) => {
+  update = (id, product) => {
     return productModel.findByIdAndUpdate(id, { $set: product });
   };
 
-  deleteProduct = (id) => {
+  delete = (id) => {
     return productModel.findByIdAndDelete(id);
   };
 

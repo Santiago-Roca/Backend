@@ -2,7 +2,6 @@ import { passportCall } from "../services/auth.js";
 import BaseRouter from "./Router.js";
 import sessionController from "../controllers/session.controller.js"
 
-
 export default class SessionRouter extends BaseRouter {
     init() {
         // REGISTER

@@ -1,5 +1,5 @@
-import productModel from "../dao/mongo/models/product.js";
-import {productService}  from "../services/index.js";
+import productModel from "../dao/models/product.model.js";
+import { productService } from "../services/repositories.js";
 
 //GET PRODUCTS
 const getProducts = async (req, res) => {
@@ -141,17 +141,15 @@ const getProductsById = async (req, res) => {
     }
 };
 
-//CREATE PRODUCT
+//POST PRODUCT
 const createProduct = async (req, res) => {
     try {
         const { title, description, code, price, category } = req.body;
         if (!title || !description || !code || !price || !category)
-            return res
-                .status(400)
-                .send({ status: "error", error: "Incomplete Values" });
+        return res.status(400).send({ status: "error", error: "Incomplete Values" });
         const product = { title, description, code, price, category };
-        await productService.createProduct(product);
-        res.sendStatus(201);
+        const result = await productService.createProduct(product);
+        res.send({ status: "Success", payload: result });
         const products = await productService.getAllProducts();
         req.io.emit("products", products);
     } catch (error) {

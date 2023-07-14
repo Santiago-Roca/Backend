@@ -1,22 +1,22 @@
-import userModel from "../models/user.js"
+import userModel from "../dao/models/user.model.js"
 
 export default class UsersManager {
-    getUsers = (params) => {
+    get = (params) => {
         return userModel.find(params).lean();
     };
-    getUserBy = (params) => {
+    getBy = (params) => {
         return userModel.findOne(params).lean();
     };
 
-    createUser = (user) => {
+    save = (user) => {
         return userModel.create(user);
     };
 
-    updateUser = (id, user) => {
+    update = (id, user) => {
         return userModel.findByIdAndUpdate(id, { $set: user });
     };
 
-    deleteUser = (id) => {
+    delete = (id) => {
         return userModel.findByIdAndDelete(id);
     };
 }

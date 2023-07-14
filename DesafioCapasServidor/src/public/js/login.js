@@ -14,7 +14,7 @@ form.addEventListener('submit', async (evt) => {
     });
 
     const responseData = await response.json();
-    if (responseData.status === 'success') {
+    if (responseData.status === 'Logged in') {
         window.location.replace('/products');
     }
 }) 

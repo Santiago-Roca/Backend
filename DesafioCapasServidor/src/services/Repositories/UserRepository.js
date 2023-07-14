@@ -4,23 +4,23 @@ export default class UserService {
     }
 
     getAllUsers = (params) => {
-        return this.dao.getUsers(params);
+        return this.dao.get(params);
     };
 
     createUser = (user) => {
-        return this.dao.createUser(user);
+        return this.dao.save(user);
     };
 
     getUserBy = (user) => {
-        return this.dao.getUserBy(user);
+        return this.dao.getBy(user);
     };
 
     updateUser = (id, user) => {
-        return this.dao.updateUser(id, user)
+        return this.dao.update(id, user)
     };
 
     deleteUser = (id) => {
-        return this.dao.deleteUser(id)
+        return this.dao.delete(id)
     };
 
 }

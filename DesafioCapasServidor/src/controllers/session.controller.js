@@ -1,3 +1,5 @@
+import { generateToken } from "../services/auth.js"
+
 //REGISTER
 const register = (req, res) => {
     res.sendSuccess("Register success")
@@ -6,7 +8,7 @@ const register = (req, res) => {
 //LOGIN
 const login = async (req, res) => {
     const token = generateToken(req.user)
-    res.cookie('authToken', token, { maxAge: 1000 * 3600 * 24, httpOnly: true }).sendSuccess("Logged in")
+    res.cookie('authToken', token, { maxAge: 1000 * 3600 * 24, httpOnly: true }).send({status: "Logged in"})
 }
 
 //CURRENT

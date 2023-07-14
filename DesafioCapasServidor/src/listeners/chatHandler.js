@@ -1,17 +1,15 @@
-import MessagesManager from "../dao/mongo/managers/messagesManager.js";
-
-const messagesService = new MessagesManager();
+import { messagesService } from "../services/repositories.js";
 
 const registerChatHandler = (io, socket) => {
   const saveMessage = async (message) => {
     await messagesService.createMessage(message);
-    const messageLogs = await messagesService.getMessages();
+    const messageLogs = await messagesService.getAllMessages();
     io.emit("chat:messageLogs", messageLogs);
   };
 
   const newParticipant = async (user) => {
     socket.broadcast.emit("chat:newConnection", user);
-    const messageLogs = await messagesService.getMessages();
+    const messageLogs = await messagesService.getAllMessages();
     socket.emit("chat:messageLogs", messageLogs);
   };
 

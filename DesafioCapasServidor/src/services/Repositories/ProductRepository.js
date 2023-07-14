@@ -4,23 +4,23 @@ export default class ProductService {
   }
 
   getAllProducts = () => {
-    return this.dao.getProducts();
+    return this.dao.get();
   };
 
   createProduct = (product) => {
-    return this.dao.createProduct(product);
+    return this.dao.save(product);
   };
 
   getProductBy = (params) => {
-    return this.dao.getProductBy(params);
+    return this.dao.getBy(params);
   };
 
   updateProduct = (id, product) => {
-    return this.dao.updateProduct(id, product)
+    return this.dao.update(id, product)
   };
 
   deleteProduct = (id) => {
-    return this.dao.deleteProduct(id)
+    return this.dao.delete(id)
   };
 
 }

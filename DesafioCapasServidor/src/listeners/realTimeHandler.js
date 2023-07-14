@@ -1,8 +1,8 @@
-import ProductsManager from "../dao/mongo/managers/ProductManager.js";
+import { productService } from "../services/repositories.js";
 
 const realTimeProducts = async (io, socket) => {
   console.log("Nuevo socket conectado");
-  const products = await new ProductsManager().getProducts();
+  const products = await new productService.getAllProducts();
   socket.emit("products", products);
 };
 

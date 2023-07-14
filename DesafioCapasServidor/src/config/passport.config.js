@@ -3,7 +3,7 @@ import { Strategy, ExtractJwt } from "passport-jwt";
 import local from 'passport-local';
 
 import gitHubStrategies from "passport-github2"
-import {userService} from "../services/index.js"
+import {userService} from "../services/repositories.js"
 
 import { createHash, validatePassword } from "../services/auth.js";
 import { cookieExtractor } from "../utils.js";

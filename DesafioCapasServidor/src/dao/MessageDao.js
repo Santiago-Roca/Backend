@@ -1,11 +1,11 @@
-import messageModel from "../models/message.js";
+import messageModel from "../dao/models/message.model.js"
 
 export default class MessagesManager {
-  getMessages = (params) => {
+  get = (params) => {
     return messageModel.find(params).lean();
   };
 
-  createMessage = (message) => {
+  save = (message) => {
     return messageModel.create(message);
   };
 }

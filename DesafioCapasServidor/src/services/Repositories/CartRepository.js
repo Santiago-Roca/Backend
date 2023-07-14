@@ -4,15 +4,15 @@ export default class CartService {
     }
 
     getAllCarts = (params) => {
-        return this.dao.getCarts(params)
+        return this.dao.get(params)
     };
 
     getCartById = (id) => {
-        return this.dao.getCartById(id)
+        return this.dao.getBy(id)
     };
 
     createCart = (cart) => {
-        return this.dao.createCart(cart);
+        return this.dao.save(cart);
     };
 
     addProductCart = (cartId, productId) => {
@@ -20,7 +20,7 @@ export default class CartService {
     }
 
     updateCart = (id, cart) => {
-        return this.dao.updateCart(id, cart)
+        return this.dao.update(id, cart)
     }
 
     updateQuantity = (id, quantity) => {
@@ -28,7 +28,7 @@ export default class CartService {
     }
 
     deleteCart = (id) => {
-        return this.dao.deleteCart(id)
+        return this.dao.delete(id)
     }
 
 }

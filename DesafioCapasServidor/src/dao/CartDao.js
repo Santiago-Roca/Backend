@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
-import cartModel from "../models/cart.js";
+import cartModel from "../dao/models/cart.model.js";
 
 export default class CartsManager {
 
-  getCarts = (params) => {
+  get = (params) => {
     return cartModel.find(params).lean();
   };
 
-  getCartById = (id) => {
+  getBy = (id) => {
     return cartModel.findOne(id).lean();
   };
 
-  createCart = (cart) => {
+  save = (cart) => {
     return cartModel.create(cart);
   };
 
@@ -19,7 +19,7 @@ export default class CartsManager {
     return cartModel.updateOne({ _id: cartId }, { $push: { products: { product: new mongoose.Types.ObjectId(productId) } } })
   }
 
-  updateCart = (id, cart) => {
+  update = (id, cart) => {
     return cartModel.findByIdAndUpdate(id, { $set: cart });
   };
 
@@ -27,7 +27,7 @@ export default class CartsManager {
     return cartModel.findByIdAndUpdate(id, { $set: { quantity: quantity } });
   };
 
-  deleteCart = (id) => {
+  delete = (id) => {
     return cartModel.findByIdAndDelete(id);
   };
 
