@@ -16,7 +16,7 @@ export default class ViewsRouter extends BaseRouter {
     this.get('/login', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), privacy("NO_AUTHENTICATED"), viewsController.login);
 
     //CURRENT
-    this.get('/current', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), viewsController.current);
+    this.get('/current', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), privacy("NO_AUTHENTICATED"), viewsController.current);
 
     //GET CART BY ID
     this.get('/cart/:cid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), viewsController.getCartById);

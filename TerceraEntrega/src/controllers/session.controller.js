@@ -1,4 +1,5 @@
 import { generateToken } from "../services/auth.js"
+import UserDTO from "../dao/DTOs/userDTO.js"
 
 //REGISTER
 const register = (req, res) => {
@@ -8,15 +9,17 @@ const register = (req, res) => {
 //LOGIN
 const login = async (req, res) => {
     const token = generateToken(req.user)
-    res.cookie('authToken', token, { maxAge: 1000 * 3600 * 24, httpOnly: true }).send({status: "Logged in"})
+    res.cookie('authToken', token, { maxAge: 1000 * 3600 * 24, httpOnly: true }).send({ status: "Logged in" })
 }
 
 //CURRENT
 const current = (req, res) => {
     if (!req.user) return res.sendUnauthorized("User not logged in")
-    res.send(req.user)
+    const user = req.user
+    const userCurrent = new UserDTO(user)
+    res.send({ status: "Success", payload: userCurrent })
 }
 
-export default{
+export default {
     register, login, current
 }

@@ -19,6 +19,10 @@ export default class CartService {
         return this.dao.addProductCart(cartId, productId)
     }
 
+    deleteProductCart = (cartId, productId) => {
+        return this.dao.deleteProductCart(cartId, productId)
+    }
+
     updateCart = (id, cart) => {
         return this.dao.update(id, cart)
     }

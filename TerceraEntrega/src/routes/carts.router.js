@@ -1,4 +1,4 @@
-import { passportCall } from "../services/auth.js";
+import { passportCall, permisions } from "../services/auth.js";
 import BaseRouter from "./Router.js";
 import cartController from "../controllers/cart.controller.js";
 
@@ -14,7 +14,7 @@ export default class CartRouter extends BaseRouter {
         this.post("/", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), cartController.createCart)
 
         //POST (Products on cart)
-        this.post("/:cid/product/:pid", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), cartController.addProductCart)
+        this.post("/:cid/product/:pid", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), permisions('USER'), cartController.addProductCart)
 
         //PUT (Actualizar Quantity)
         this.put("/:cid/product/:pid", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), cartController.updateQuantity)
@@ -24,5 +24,8 @@ export default class CartRouter extends BaseRouter {
 
         //DELETE (All Products in cart)
         this.delete("/:cid", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), cartController.deleteAllProducts)
+
+        //FINALIZE PURCHASE
+        this.post("/:cid/purchase", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), permisions('USER'), cartController.finalizePurchase)
     }
 }

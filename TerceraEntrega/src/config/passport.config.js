@@ -3,7 +3,7 @@ import { Strategy, ExtractJwt } from "passport-jwt";
 import local from 'passport-local';
 
 import gitHubStrategies from "passport-github2"
-import {userService} from "../services/repositories.js"
+import { userService } from "../services/repositories.js"
 
 import { createHash, validatePassword } from "../services/auth.js";
 import { cookieExtractor } from "../utils.js";
@@ -40,15 +40,15 @@ const initializePassportStrategies = () => {
     passport.use('login', new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
         let resultUser;
         try {
-            if (email === "admin@admin.com" && password === '123') {
+            if (email === "admin@admin.com" && password === 'admin') {
                 resultUser = {
                     name: "Admin",
                     id: 0,
-                    role: 'superAdmin'
+                    role: 'admin'
                 }
                 return done(null, resultUser)
             }
-            const user = await userService.getUserBy({email})
+            const user = await userService.getUserBy({ email })
             if (!user) return done(null, false, { message: 'User not found' })
             const isValidPassword = await validatePassword(password, user.password)
             if (!isValidPassword) return done(null, false, { message: "Invalid password" })

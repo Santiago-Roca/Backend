@@ -35,6 +35,23 @@ export const passportCall = (strategy, options = {}) => {
     }
 }
 
+//DELIMITAR PERMISOS
+export const permisions = (permisionType) => {
+    return (req, res, next) => {
+        const user = req.user;
+        if (!user) return res.sendUnauthorized('Debe ingresar sesion como Administrador para ejecutar esta acción');
+        switch (permisionType) {
+            case 'ADMIN':
+                if (user.role === 'admin') next();
+                else return res.sendUnauthorized('No tiene los permisos para ejecutar esta acción');
+                break;
+            case 'USER':
+                if (user.role === 'user') next();
+                else return res.sendUnauthorized('No tiene los permisos para ejecutar esta acción');
+        }
+    }
+}
+
 //GENERATE TOKEN
 export const generateToken = (user) => {
     return jwt.sign(user, 'jwtSecret', { expiresIn: '1d' })

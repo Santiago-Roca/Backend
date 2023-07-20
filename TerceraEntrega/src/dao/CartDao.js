@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import cartModel from "../dao/models/cart.model.js";
+import cartModel from "./models/cart.model.js";
 
 export default class CartsManager {
 
@@ -17,6 +17,10 @@ export default class CartsManager {
 
   addProductCart = (cartId, productId) => {
     return cartModel.updateOne({ _id: cartId }, { $push: { products: { product: new mongoose.Types.ObjectId(productId) } } })
+  }
+
+  deleteProductCart = (cartId, productId) => {
+    return cartModel.updateOne({ _id: cartId }, { $pull: { products: { product: productId } } })
   }
 
   update = (id, cart) => {

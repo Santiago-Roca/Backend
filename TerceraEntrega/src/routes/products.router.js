@@ -1,4 +1,4 @@
-import { passportCall } from "../services/auth.js";
+import { passportCall, permisions } from "../services/auth.js";
 import BaseRouter from "./Router.js";
 import productControllers from "../controllers/product.controllers.js";
 
@@ -15,13 +15,13 @@ export default class ProductRouter extends BaseRouter {
         this.get('/:pid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getProductsById)
 
         // //POST
-        this.post('/', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.createProduct)
+        this.post('/', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), permisions('ADMIN'), productControllers.createProduct)
 
         // // //PUT
-        this.put('/:pid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.updateProduct)
+        this.put('/:pid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), permisions('ADMIN'), productControllers.updateProduct)
 
         // //DELETE
-        this.delete('/:pid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.deleteProduct)
+        this.delete('/:pid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), permisions('ADMIN'), productControllers.deleteProduct)
 
     }
 }
