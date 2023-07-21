@@ -138,30 +138,25 @@ const finalizePurchase = async (req, res) => {
     const { cid } = req.params;
     const email = req.user.email;
     let precioTotal = 0;
-    let compraIncompleta = false;
-    let entre = false;
     let cart = await cartService.getCartById({ _id: cid });
+
     //Si no hay productos en ese carrito mostrar mensaje
     if (cart.products.length === 0) {
         return res.send({ status: "error", error: "There are no products in the selected cart" });
     }
-    cart.products.forEach(async item => {
-        //Busco el producto para ver el stock
+
+    //Recorro los productos en el carrito y hago validaciones
+    cart.products.forEach(async (item) => {
         const product = await productService.getProductBy({ _id: item.product._id })
         if (product.stock >= item.quantity) {
-            entre = true;
             precioTotal = precioTotal + item.product.price;
             const newStock = product.stock - item.quantity
             await productService.updateProduct(item.product._id, { stock: newStock })
             await cartService.deleteProductCart(cid, item.product._id)
-            // await cartService.getCartById({_id: cid})
+            await cartService.getCartById({ _id: cid })
         }
-
     });
 
-    cart = await cartService.getCartById({ _id: cid })
-    console.log(cart.products.length)
-    console.log(cart)
     if (cart.products.length === 0) {
         const ticket = {
             code: Date.now() * Math.floor(Math.random() * 1000),
@@ -174,33 +169,6 @@ const finalizePurchase = async (req, res) => {
 
     return res.send({ status: "Incomplete", message: ", there are products in the cart that could not be completed", payload: cart })
 
-
-    // const cartIsEmpty = await cartService.getCartById({ _id: cid });
-
-    // if (cart.products.length === 0) {
-    //     const ticket = {
-    //         code: Date.now() * Math.floor(Math.random() * 1000),
-    //         amount: precioTotal,
-    //         purchaser: email
-    //     }
-    //     const response = await ticketService.createTicket(ticket)
-    //     return res.send({ status: "success", payload: response });
-    // } else {
-    //     return res.send({ status: "Incomplete", message: ", there are products in the cart that could not be completed", payload: cartIsEmpty })
-    // }
-
-    // const cartIsEmpty = await cartService.getCartById({ _id: cid });
-    // if (cartIsEmpty.products.length === 0) {
-    //     const ticket = {
-    //         code: Date.now() * Math.floor(Math.random() * 1000),
-    //         amount: precioTotal,
-    //         purchaser: email
-    //     }
-    //     const response = await ticketService.createTicket(ticket)
-    //     return res.send({ status: "success", payload: response });
-    // } else {
-    //     return res.send({ status: "Incomplete", message: ", there are products in the cart that could not be completed", payload: cartIsEmpty })
-    // }
 }
 
 export default {
