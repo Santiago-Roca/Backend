@@ -15,6 +15,7 @@ import realTimeProducts from "./listeners/realTimeHandler.js";
 import initializePassportStrategies from "./config/passport.config.js";
 import __dirname from "./utils.js";
 import config from "./config.js";
+import errorHandler from "./middlewares/error.js"
 
 const app = express();
 const PORT = config.app.PORT;
@@ -51,6 +52,7 @@ app.use("/api/products", productsRouter.getRouter());
 app.use("/api/carts", cartRouter.getRouter());
 app.use("/api/sessions", sessionRouter.getRouter());
 app.use("/", viewsRouter.getRouter());
+app.use(errorHandler)
 
 io.on("connection", async (socket) => {
   registerChatHandler(io, socket);

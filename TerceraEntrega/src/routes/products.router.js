@@ -5,13 +5,16 @@ import productControllers from "../controllers/product.controllers.js";
 
 export default class ProductRouter extends BaseRouter {
     init() {
+        //MOCKS
+        this.get('/mockingproducts', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getMocks)
+ 
         //GET PRODUCTS
         this.get('/', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getProducts)
 
-        // //CATEGORY FILTER
+        //CATEGORY FILTER
         this.get('/:category', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getProductsByCategory)
 
-        // //GET BY ID
+        //GET BY ID
         this.get('/:pid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getProductsById)
 
         // //POST
@@ -22,6 +25,7 @@ export default class ProductRouter extends BaseRouter {
 
         // //DELETE
         this.delete('/:pid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), permisions('ADMIN'), productControllers.deleteProduct)
+
 
     }
 }

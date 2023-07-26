@@ -146,6 +146,8 @@ const finalizePurchase = async (req, res) => {
     }
 
     //Recorro los productos en el carrito y hago validaciones
+    let counter = 0;
+    let productsNotAdded = []
     cart.products.forEach(async (item) => {
         const product = await productService.getProductBy({ _id: item.product._id })
         if (product.stock >= item.quantity) {
@@ -153,22 +155,26 @@ const finalizePurchase = async (req, res) => {
             const newStock = product.stock - item.quantity
             await productService.updateProduct(item.product._id, { stock: newStock })
             await cartService.deleteProductCart(cid, item.product._id)
-            await cartService.getCartById({ _id: cid })
+            counter++
+        } else {
+            counter++
+            productsNotAdded.push(item)
+        }
+
+        if (counter == cart.products.length) {
+            if (productsNotAdded.length > 0) {
+                return res.send({ status: "Incomplete", message: ", there are products in the cart that could not be completed", payload: productsNotAdded})
+            } else {
+                const ticket = {
+                    code: Date.now() * Math.floor(Math.random() * 1000),
+                    amount: precioTotal,
+                    purchaser: email
+                }
+                const response = await ticketService.createTicket(ticket)
+                return res.send({ status: "success", payload: response, data: productsNotAdded });
+            }
         }
     });
-
-    if (cart.products.length === 0) {
-        const ticket = {
-            code: Date.now() * Math.floor(Math.random() * 1000),
-            amount: precioTotal,
-            purchaser: email
-        }
-        const response = await ticketService.createTicket(ticket)
-        return res.send({ status: "success", payload: response });
-    }
-
-    return res.send({ status: "Incomplete", message: ", there are products in the cart that could not be completed", payload: cart })
-
 }
 
 export default {

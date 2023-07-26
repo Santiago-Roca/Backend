@@ -1,4 +1,8 @@
+import EErrors from "../constant/EErrors.js";
+import { productErrorIncompleteValues, productErrorRepitedCode } from "../constant/productErrors.js";
 import productModel from "../dao/models/product.model.js";
+import { generateProduct } from "../mocks/product.mock.js";
+import ErrorService from "../services/ErrorService.js";
 import { productService } from "../services/repositories.js";
 
 //GET PRODUCTS
@@ -143,17 +147,37 @@ const getProductsById = async (req, res) => {
 
 //POST PRODUCT
 const createProduct = async (req, res) => {
+    const { title, description, code, price, category } = req.body;
+    const exists = await productService.getProductBy({ code: code })
+
+    if (!title || !description || !code || !price || !category) {
+        ErrorService.createError({
+            name: "Error de creación de producto",
+            cause: productErrorIncompleteValues(),
+            message: 'Error intentando crear un nuevo producto',
+            code: EErrors.INCOMPLETE_VALUES,
+            status: 400
+        })
+    }
+    if (exists) {
+        ErrorService.createError({
+            name: "Error de creación de producto",
+            cause: productErrorRepitedCode(exists),
+            message: 'Error intentando crear un nuevo producto',
+            code: EErrors.REPITED_CODE,
+            status: 400
+        })
+    }
     try {
-        const { title, description, code, price, category } = req.body;
-        if (!title || !description || !code || !price || !category)
-        return res.status(400).send({ status: "error", error: "Incomplete Values" });
         const product = { title, description, code, price, category };
         const result = await productService.createProduct(product);
         res.send({ status: "Success", payload: result });
         const products = await productService.getAllProducts();
         req.io.emit("products", products);
+
     } catch (error) {
         console.log(error);
+        res.sendStatus(500);
     }
 };
 
@@ -184,6 +208,19 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+//GET MOCKS
+const getMocks = async (req, res) => {
+    try {
+        const products = [];
+        for (let i = 0; i <= 100; i++) {
+            products.push(generateProduct());
+        }
+        res.send({ status: "success", payload: products })
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export default {
     getProducts,
     getProductsByCategory,
@@ -191,4 +228,5 @@ export default {
     createProduct,
     updateProduct,
     deleteProduct,
+    getMocks
 };
