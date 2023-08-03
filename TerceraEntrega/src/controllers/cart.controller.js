@@ -54,7 +54,8 @@ const addProductCart = async (req, res) => {
         return res.status(400).send({ status: "error", message: "Cart not found" })
 
     } catch (error) {
-        console.log(error)
+        req.logger.error(error);
+
     }
 }
 
@@ -88,7 +89,7 @@ const updateQuantity = async (req, res) => {
         return res.status(400).send({ status: "error", message: "Cart not found" })
 
     } catch (error) {
-        console.log(error)
+        req.logger.error(error);
     }
 }
 
@@ -113,7 +114,7 @@ const deleteProductCart = async (req, res) => {
         return res.status(400).send({ status: "error", message: "Cart not found" })
 
     } catch (error) {
-        console.log(error)
+        req.logger.error(error);
     }
 }
 
@@ -129,7 +130,7 @@ const deleteAllProducts = async (req, res) => {
         return res.status(400).send({ status: "error", message: "Cart not found" })
 
     } catch (error) {
-        console.log(error)
+        req.logger.error(error);
     }
 }
 

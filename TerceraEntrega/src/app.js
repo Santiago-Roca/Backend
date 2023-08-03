@@ -16,10 +16,12 @@ import initializePassportStrategies from "./config/passport.config.js";
 import __dirname from "./utils.js";
 import config from "./config.js";
 import errorHandler from "./middlewares/error.js"
+import attachLogger from "./middlewares/logger.js";
 
 const app = express();
 const PORT = config.app.PORT;
 
+app.use(attachLogger)
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -53,6 +55,16 @@ app.use("/api/carts", cartRouter.getRouter());
 app.use("/api/sessions", sessionRouter.getRouter());
 app.use("/", viewsRouter.getRouter());
 app.use(errorHandler)
+
+app.use("/loggertest", (req, res) => {
+  req.logger.debug("Entrando en logger de debug");
+  req.logger.http("Entrando en logger de http");
+  req.logger.info("Entrando en logger de Info");
+  req.logger.warning("Entrando en logger de warning");
+  req.logger.error("Entrando en logger de error");
+  req.logger.fatal("Entrando en logger de fatal");
+  res.send({ status: "success" })
+})
 
 io.on("connection", async (socket) => {
   registerChatHandler(io, socket);

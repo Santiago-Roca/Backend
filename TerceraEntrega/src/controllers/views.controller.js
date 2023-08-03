@@ -60,7 +60,7 @@ const getCartById = async (req, res) => {
         if (!cartId) return res.status(404).send({ status: "error", error: "Cart not found" });
         res.render("cart", cartId)
     } catch (error) {
-        console.log(error)
+        req.logger.error(error);
     }
 };
 

@@ -134,14 +134,14 @@ const getProductsById = async (req, res) => {
     try {
         const pid = req.params.pid;
         const productId = await productService.getProductBy({ _id: pid });
-        console.log(productId);
+        req.logger.info(productId);
         if (!productId)
             return res
                 .status(404)
                 .send({ status: "error", error: "Product not found" });
         res.send({ status: "success", payload: productId });
     } catch (error) {
-        console.log(error);
+        req.logger.error(error);
     }
 };
 
@@ -176,7 +176,7 @@ const createProduct = async (req, res) => {
         req.io.emit("products", products);
 
     } catch (error) {
-        console.log(error);
+        req.logger.error(error);
         res.sendStatus(500);
     }
 };
@@ -191,7 +191,7 @@ const updateProduct = async (req, res) => {
         const products = await productService.getAllProducts();
         req.io.emit("products", products);
     } catch (error) {
-        console.log(error);
+        req.logger.error(error);
     }
 };
 
@@ -204,7 +204,7 @@ const deleteProduct = async (req, res) => {
         const products = await productService.getAllProducts();
         req.io.emit("products", products);
     } catch (error) {
-        console.log(error);
+        req.logger.error(error);
     }
 };
 
@@ -217,7 +217,7 @@ const getMocks = async (req, res) => {
         }
         res.send({ status: "success", payload: products })
     } catch (error) {
-        console.log(error)
+        req.logger.error(error);
     }
 }
 
