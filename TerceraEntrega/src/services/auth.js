@@ -39,10 +39,14 @@ export const passportCall = (strategy, options = {}) => {
 export const permisions = (permisionType) => {
     return (req, res, next) => {
         const user = req.user;
-        if (!user) return res.sendUnauthorized('Debe ingresar sesion como Administrador para ejecutar esta acción');
+        if (!user) return res.sendUnauthorized('Debe ingresar sesion como Administrador o Usuario premium para ejecutar esta acción');
         switch (permisionType) {
             case 'ADMIN':
-                if (user.role === 'admin') next();
+                if (user.role === 'admin' || user.role === 'premium') next();
+                else return res.sendUnauthorized('No tiene los permisos para ejecutar esta acción');
+                break;
+            case 'PREMIUM':
+                if (user.role === 'premium') next();
                 else return res.sendUnauthorized('No tiene los permisos para ejecutar esta acción');
                 break;
             case 'USER':

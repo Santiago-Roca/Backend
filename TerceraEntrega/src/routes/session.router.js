@@ -13,5 +13,9 @@ export default class SessionRouter extends BaseRouter {
         //CURRENT
         this.get('/current', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), sessionController.current)
 
+        this.post('/restoreRequest',['NO_AUTH'],sessionController.restoreRequest)
+
+        this.post('/restorePassword',['PUBLIC'],sessionController.restorePassword)
+
     }
 }

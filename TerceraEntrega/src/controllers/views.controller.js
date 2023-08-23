@@ -74,7 +74,22 @@ const chat = (req, res) => {
     res.render("chat");
 }
 
+const restoreRequest = (req,res)=>{
+    res.render('restoreRequest')
+}
+
+const restorePassword = (req,res) =>{
+    const {token} = req.query;
+    try{
+        const validToken = jwt.verify(token,config.jwt.SECRET)
+        //Aquí verifico si está en la whitelist, y si no, también lo mando a inválido.
+        res.render('restorePassword') 
+    }catch(error){
+        return res.render('invalidToken')
+    }   
+}
+
 export default {
-    getProducts, register, login, current, getCartById, realTimeProducts, chat
+    getProducts, register, login, current, getCartById, realTimeProducts, chat, restoreRequest, restorePassword
 }
 

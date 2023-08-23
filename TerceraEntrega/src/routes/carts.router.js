@@ -14,7 +14,7 @@ export default class CartRouter extends BaseRouter {
         this.post("/", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), cartController.createCart)
 
         //POST (Products on cart)
-        this.post("/:cid/product/:pid", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), permisions('USER'), cartController.addProductCart)
+        this.post("/:cid/product/:pid", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), cartController.addProductCart)
 
         //PUT (Actualizar Quantity)
         this.put("/:cid/product/:pid", ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), cartController.updateQuantity)

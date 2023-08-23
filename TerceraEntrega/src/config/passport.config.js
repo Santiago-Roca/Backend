@@ -7,6 +7,8 @@ import { userService } from "../services/repositories.js"
 
 import { createHash, validatePassword } from "../services/auth.js";
 import { cookieExtractor } from "../utils.js";
+import UserInsertDTO from '../dto/User/InsertDTO.js';
+import UserTokenDTO from '../dto/User/TokenDTO.js';
 
 const LocalStrategy = local.Strategy;
 const JWTStrategy = Strategy
@@ -20,15 +22,23 @@ const initializePassportStrategies = () => {
             const exists = await userService.getUserBy({ email })
             if (exists) return done(null, false, { message: "User already exists" })
             const hashedPassword = await createHash(password)
+            // const newUser = UserInsertDTO.getFrom({
+            //     firstName,
+            //     lastName,
+            //     role,
+            //     age,
+            //     email,
+            //     password:hashedPassword
+            //   });
             const newUser = {
                 firstName,
                 lastName,
-                email,
                 role,
-                cart,
                 age,
+                email,
+                cart,
                 password: hashedPassword
-            }
+            };
             const result = await userService.createUser(newUser)
             return done(null, result)
         } catch (error) {
@@ -60,6 +70,7 @@ const initializePassportStrategies = () => {
                 age: user.age,
                 cart: user.cart
             }
+            // resultUser = UserTokenDTO.getFrom(user);
             return done(null, resultUser)
         } catch (error) {
             return done(error)

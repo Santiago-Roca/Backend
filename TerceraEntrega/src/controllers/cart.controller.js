@@ -1,5 +1,5 @@
 import cartModel from "../dao/models/cart.model.js";
-import { cartService, productService, ticketService } from "../services/repositories.js"
+import { cartService, productService, ticketService, userService } from "../services/repositories.js"
 
 
 //GET CARTS    
@@ -31,9 +31,14 @@ const addProductCart = async (req, res) => {
     const { cid } = req.params
     const { pid } = req.params
     try {
+        let user = await userService.getUserBy({ cart: cid })
+        let product = await productService.getProductBy({ _id: pid })
         const cartExists = await cartService.getCartById({ _id: cid })
         const productExistsInCart = await cartService.getCartById({ _id: cid, "products.product": { _id: pid } })
         if (cartExists) {
+            if (user.role === "premium" && user.email === product.owner) {
+                return res.send({ status: "error", error: `El usuario ${user.email} no puede agragar a su carrito un producto creado por el mismo` })
+            }
             if (productExistsInCart) {
                 cartExists.products.map(async (item) => {
                     if (item.product._id == pid) {
@@ -52,7 +57,6 @@ const addProductCart = async (req, res) => {
             }
         }
         return res.status(400).send({ status: "error", message: "Cart not found" })
-
     } catch (error) {
         req.logger.error(error);
 
@@ -164,7 +168,7 @@ const finalizePurchase = async (req, res) => {
 
         if (counter == cart.products.length) {
             if (productsNotAdded.length > 0) {
-                return res.send({ status: "Incomplete", message: ", there are products in the cart that could not be completed", payload: productsNotAdded})
+                return res.send({ status: "Incomplete", message: ", there are products in the cart that could not be completed", payload: productsNotAdded })
             } else {
                 const ticket = {
                     code: Date.now() * Math.floor(Math.random() * 1000),

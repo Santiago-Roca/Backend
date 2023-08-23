@@ -1,20 +1,21 @@
 import express from "express";
 import handlebars from "express-handlebars";
 import mongoose from "mongoose";
-import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
+import { Server } from "socket.io";
 
 import ProductsRouter from "./routes/products.router.js";
 import ViewsRouter from "./routes/views.router.js";
 import SessionRouter from "./routes/session.router.js";
 import CartRouter from "./routes/carts.router.js";
+import UserRouter from "./routes/users.router.js";
 
 import registerChatHandler from "./listeners/chatHandler.js";
 import realTimeProducts from "./listeners/realTimeHandler.js";
 
 import initializePassportStrategies from "./config/passport.config.js";
 import __dirname from "./utils.js";
-import config from "./config.js";
+import config from "./config/config.js";
 import errorHandler from "./middlewares/error.js"
 import attachLogger from "./middlewares/logger.js";
 
@@ -49,10 +50,12 @@ const sessionRouter = new SessionRouter()
 const viewsRouter = new ViewsRouter()
 const productsRouter = new ProductsRouter()
 const cartRouter = new CartRouter()
+const userRouter = new UserRouter()
 
 app.use("/api/products", productsRouter.getRouter());
 app.use("/api/carts", cartRouter.getRouter());
 app.use("/api/sessions", sessionRouter.getRouter());
+app.use("/api/users", userRouter.getRouter());
 app.use("/", viewsRouter.getRouter());
 app.use(errorHandler)
 

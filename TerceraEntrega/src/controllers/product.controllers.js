@@ -3,7 +3,7 @@ import { productErrorIncompleteValues, productErrorRepitedCode } from "../consta
 import productModel from "../dao/models/product.model.js";
 import { generateProduct } from "../mocks/product.mock.js";
 import ErrorService from "../services/ErrorService.js";
-import { productService } from "../services/repositories.js";
+import { productService, userService } from "../services/repositories.js";
 
 //GET PRODUCTS
 const getProducts = async (req, res) => {
@@ -147,7 +147,7 @@ const getProductsById = async (req, res) => {
 
 //POST PRODUCT
 const createProduct = async (req, res) => {
-    const { title, description, code, price, category } = req.body;
+    const { title, description, code, price, category, owner } = req.body;
     const exists = await productService.getProductBy({ code: code })
 
     if (!title || !description || !code || !price || !category) {
@@ -169,7 +169,16 @@ const createProduct = async (req, res) => {
         })
     }
     try {
-        const product = { title, description, code, price, category };
+        if (owner) {
+            let userExists = await userService.getUserBy({ email: owner })
+            if (!userExists) {
+                return res.send({ status: "error", error: "El usuario no existe" })
+            }
+            if (userExists.role != "premium") {
+                return res.send({ status: "error", error: "El usuario no es premium" })
+            }
+        }
+        const product = { title, description, code, price, category, owner };
         const result = await productService.createProduct(product);
         res.send({ status: "Success", payload: result });
         const products = await productService.getAllProducts();
@@ -199,8 +208,24 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { pid } = req.params;
-        await productService.deleteProduct(pid);
-        res.sendStatus(201);
+        let user = req.user
+        let product = await productService.getProductBy({ _id: pid })
+        if (product.owner === "admin") {
+            if (user.role === "admin") {
+                await productService.deleteProduct(pid);
+                return res.send({ status: "success", message: "Producto eliminado correctamente" });
+            } else {
+                return res.send({ status: "error", error: "Debe tener permisos de Administrador para poder eliminar este producto" });
+            }
+        }
+        if (user.role === "premium") {
+            if (user.email === product.owner) {
+                await productService.deleteProduct(pid);
+                return res.send({ status: "success", message: "Producto eliminado correctamente" });
+            } else {
+                return res.send({ status: "error", error: `El producto no fue creado por el usuario: ${user.email}` });
+            }
+        }
         const products = await productService.getAllProducts();
         req.io.emit("products", products);
     } catch (error) {
