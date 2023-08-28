@@ -1,0 +1,49 @@
+<div>
+  <p>{{user.name}}
+    <br />
+    role:{{user.role}}
+    <br />
+    email:{{user.email}}
+  </p>
+
+  <button id="botonLogout">Logout</button>
+  {{#if products}}
+    <h1>Lista de productos</h1>
+    <ul>
+      {{#each products}}
+        <p>{{this.title}}
+          <br />
+          Precio: ${{this.price}}
+          <br />
+          Cat:
+          {{this.category}}
+          <br />
+          Stock:
+          {{this.stock}}
+          unidades
+          <br />
+          ID:
+          {{this._id}}
+          <br />
+          <button>Add to cart</button>
+          <br /></p>
+      {{/each}}
+    </ul>
+  {{else}}
+    <h2>No hay productos</h2>
+  {{/if}}
+
+  {{#if hasPrevPage}}
+    <a href="/products/?page={{prevPage}}&limit={{limit}}"><button
+      >Anterior</button></a>
+  {{/if}}
+
+  {{page}}
+
+  {{#if hasNextPage}}
+    <a href="/products/?page={{nextPage}}&limit={{limit}}"><button
+      >Siguiente</button></a>
+  {{/if}}
+</div>
+
+<script src="/js/home.js"></script>
