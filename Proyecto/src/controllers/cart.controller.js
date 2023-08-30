@@ -16,7 +16,7 @@ const getCartById = async (req, res) => {
     res.send({ status: "success", payload: cartId })
 }
 
-//POST CART
+//CREATE CART
 const createCart = async (req, res) => {
     const { products } = req.body;
     if (!products) return res.status(400).send({ status: "error", error: "Incomplete Values" })

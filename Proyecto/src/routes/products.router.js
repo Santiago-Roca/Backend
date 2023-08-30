@@ -7,14 +7,14 @@ export default class ProductRouter extends BaseRouter {
         //MOCKS
         this.get('/mockingproducts', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getMocks)
 
+        //GET BY ID
+        this.get('/:pid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getProductsById)
+
         //GET PRODUCTS
         this.get('/', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getProducts)
 
         //CATEGORY FILTER
         this.get('/:category', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getProductsByCategory)
-
-        //GET BY ID
-        this.get('/:pid', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), productControllers.getProductsById)
 
         // //POST
         this.post('/', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), permisions('ADMIN', 'PREMIUM'), productControllers.createProduct)

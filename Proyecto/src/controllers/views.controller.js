@@ -1,5 +1,8 @@
+import jwt from 'jsonwebtoken';
 import productModel from "../dao/models/product.model.js";
 import cartService from "../services/Repositories/CartRepository.js";
+import config from '../config/config.js';
+
 
 //GET PRODUCTS
 const getProducts = async (req, res) => {
@@ -74,10 +77,12 @@ const chat = (req, res) => {
     res.render("chat");
 }
 
+//RESTORE REQUEST
 const restoreRequest = (req,res)=>{
     res.render('restoreRequest')
 }
 
+//RESTORE PASSWORD
 const restorePassword = (req,res) =>{
     const {token} = req.query;
     try{

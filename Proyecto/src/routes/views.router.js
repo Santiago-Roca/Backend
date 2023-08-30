@@ -27,7 +27,10 @@ export default class ViewsRouter extends BaseRouter {
     // //CHAT
     this.get('/chat', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), viewsController.chat);
 
+    //RESTORE REQUEST
     this.get('/restoreRequest', ['PUBLIC'], viewsController.restoreRequest)
+
+    //RESTORE PASSWORD
     this.get('/restorePassword', ['NO_AUTH'], viewsController.restorePassword)
 
   }

@@ -3,6 +3,8 @@ import handlebars from "express-handlebars";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 
 import ProductsRouter from "./routes/products.router.js";
 import ViewsRouter from "./routes/views.router.js";
@@ -45,6 +47,20 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.1',
+    info: {
+      title: "Proyecto Backend",
+      description: "Documentación para API principal del Proyecto de Backend"
+    }
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`]
+}
+
+const specs = swaggerJSDoc(swaggerOptions);
+app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 const sessionRouter = new SessionRouter()
 const viewsRouter = new ViewsRouter()

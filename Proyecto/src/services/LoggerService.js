@@ -29,7 +29,7 @@ export default class LoggerService {
                     levels: this.options.levels,
                     transports: [
                         new winston.transports.Console({
-                            level: "debug", format: winston.format.combine(winston.format.colorize({ colors: this.options.colors }), winston.format.simple())
+                            level: "debug", format: winston.format.combine(winston.format.colorize({ colors: this.options.colors }), winston.format.simple()),
                         })
                     ]
                 })

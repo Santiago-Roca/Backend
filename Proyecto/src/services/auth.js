@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
+import config from '../config/config.js';
 
 //CREATE HASH
 export const createHash = async (password) => {
@@ -58,7 +59,7 @@ export const permisions = (permisionType) => {
 
 //GENERATE TOKEN
 export const generateToken = (user) => {
-    return jwt.sign(user, 'jwtSecret', { expiresIn: '1d' })
+    return jwt.sign(user, config.jwt.SECRET, { expiresIn: '1d' })
 }
 
 //PRIVACY TO ACCESS

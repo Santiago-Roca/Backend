@@ -3,12 +3,13 @@ import { Strategy, ExtractJwt } from "passport-jwt";
 import local from 'passport-local';
 
 import gitHubStrategies from "passport-github2"
-import { userService } from "../services/repositories.js"
+import { cartService, userService } from "../services/repositories.js"
 
 import { createHash, validatePassword } from "../services/auth.js";
 import { cookieExtractor } from "../utils.js";
 import UserInsertDTO from '../dto/User/InsertDTO.js';
 import UserTokenDTO from '../dto/User/TokenDTO.js';
+import config from './config.js';
 
 const LocalStrategy = local.Strategy;
 const JWTStrategy = Strategy
@@ -18,25 +19,19 @@ const initializePassportStrategies = () => {
     //REGISTER
     passport.use("register", new LocalStrategy({ passReqToCallback: true, usernameField: 'email' }, async (req, email, password, done) => {
         try {
-            const { firstName, lastName, role, age, cart } = req.body;
+            const { firstName, lastName, role, age } = req.body;
             const exists = await userService.getUserBy({ email })
             if (exists) return done(null, false, { message: "User already exists" })
             const hashedPassword = await createHash(password)
-            // const newUser = UserInsertDTO.getFrom({
-            //     firstName,
-            //     lastName,
-            //     role,
-            //     age,
-            //     email,
-            //     password:hashedPassword
-            //   });
+            //Le creo un carrito al usuario que se registra por primera vez:
+            const cartUser = await cartService.createCart({ products: [] })
             const newUser = {
                 firstName,
                 lastName,
                 role,
                 age,
                 email,
-                cart,
+                cart: cartUser,
                 password: hashedPassword
             };
             const result = await userService.createUser(newUser)
@@ -70,7 +65,6 @@ const initializePassportStrategies = () => {
                 age: user.age,
                 cart: user.cart
             }
-            // resultUser = UserTokenDTO.getFrom(user);
             return done(null, resultUser)
         } catch (error) {
             return done(error)
@@ -105,7 +99,7 @@ const initializePassportStrategies = () => {
     //JWT
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-        secretOrKey: 'jwtSecret'
+        secretOrKey: config.jwt.SECRET
     }, async (payload, done) => {
         try {
             return done(null, payload);

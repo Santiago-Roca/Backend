@@ -5,6 +5,22 @@ import { generateProduct } from "../mocks/product.mock.js";
 import ErrorService from "../services/ErrorService.js";
 import { productService, userService } from "../services/repositories.js";
 
+//GET PRODUCTS BY ID
+const getProductsById = async (req, res) => {
+    try {
+        const pid = req.params.pid;
+        const productId = await productService.getProductBy({ _id: pid });
+        req.logger.info(productId);
+        if (!productId)
+            return res
+                .status(404)
+                .send({ status: "error", error: "Product not found" });
+        res.send({ status: "success", payload: productId });
+    } catch (error) {
+        req.logger.error(error);
+    }
+};
+
 //GET PRODUCTS
 const getProducts = async (req, res) => {
     try {
@@ -129,21 +145,6 @@ const getProductsByCategory = async (req, res) => {
     }
 };
 
-//GET PRODUCTS BY ID
-const getProductsById = async (req, res) => {
-    try {
-        const pid = req.params.pid;
-        const productId = await productService.getProductBy({ _id: pid });
-        req.logger.info(productId);
-        if (!productId)
-            return res
-                .status(404)
-                .send({ status: "error", error: "Product not found" });
-        res.send({ status: "success", payload: productId });
-    } catch (error) {
-        req.logger.error(error);
-    }
-};
 
 //POST PRODUCT
 const createProduct = async (req, res) => {
