@@ -1,7 +1,6 @@
 {
   "name": "desafio2",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "engines": {
     "node": ">=14 <17"
@@ -36,5 +35,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "winston": "^3.10.0"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }
