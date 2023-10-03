@@ -35,7 +35,7 @@ export default class ViewsRouter extends BaseRouter {
     this.get('/completePurchase', ['PUBLIC'], passportCall('jwt', { strategyType: 'jwt', session: false }), permisions('USER_PREMIUM'), viewsController.completePurchase);
 
     //RESTORE REQUEST
-    this.get('/restoreRequest', ['PUBLIC'], permisions('USER_PREMIUM'), viewsController.restoreRequest)
+    this.get('/restoreRequest', ['PUBLIC'], viewsController.restoreRequest)
 
     //RESTORE PASSWORD
     this.get('/restorePassword', ['NO_AUTH'], viewsController.restorePassword)
