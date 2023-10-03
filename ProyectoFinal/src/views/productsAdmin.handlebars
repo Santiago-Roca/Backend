@@ -1,0 +1,59 @@
+<div>
+  <div>
+    <p>{{user.name}}
+      <br />
+      role:{{user.role}}
+      <br />
+      email:{{user.email}}
+    </p>
+  </div>
+
+  <button id="botonLogout">Logout</button>
+  <button><a style="color: #fff;" href="/menuAdmin">Volver al Menú Admin</a></button>
+  <br /><br />
+
+  {{#if products}}
+  <h1>Lista de productos</h1>
+  <ul>
+    {{#each products}}
+    <div>
+      <p>{{this.title}}
+        <br />
+        Precio: ${{this.price}}
+        <br />
+        Cat:
+        {{this.category}}
+        <br />
+        Stock:
+        {{this.stock}}
+        unidades
+        <br />
+        Owner:
+        {{this.owner}}
+        <br />
+        <span class="IDProduct">
+          ID:{{this._id}}
+        </span>
+        <br />
+        <button class="btnDelete">Delete</button>
+        <br />
+      </p>
+    </div>
+    {{/each}}
+  </ul>
+  {{else}}
+  <h2>No hay productos</h2>
+  {{/if}}
+
+  {{#if hasPrevPage}}
+  <a href="/productsAdmin/?page={{prevPage}}&limit={{limit}}"><button>Anterior</button></a>
+  {{/if}}
+
+  {{page}}
+
+  {{#if hasNextPage}}
+  <a href="/productsAdmin/?page={{nextPage}}&limit={{limit}}"><button>Siguiente</button></a>
+  {{/if}}
+</div>
+
+<script src="/js/productsAdmin.js"></script>

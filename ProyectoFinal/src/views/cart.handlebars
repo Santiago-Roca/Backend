@@ -1,0 +1,42 @@
+<div>
+  <button><a style="color: #fff;" href="/products">Volver a productos</a></button>
+  {{#if products}}
+  <h1>Productos en Carrito:</h1>
+  <ul>
+    {{#each products}}
+    <div>
+      <p style="margin-bottom: 0px;">{{product.title}}
+        <br />
+        Precio: ${{product.price}}
+        <br />
+        Cat:
+        {{product.category}}
+        <br />
+        Stock:
+        {{product.stock}}
+        unidades
+        <br />
+        Cantidad seleccionada:
+        {{quantity}}
+        <br />
+        <span class="IDProduct">
+          ID:{{product._id}}
+        </span>
+      </p>
+      <button class="btnDelete">Eliminar</button>
+    </div>
+    {{/each}}
+  </ul>
+  <div>
+    <button id="emptyCart">Vaciar carrito</button>
+    <br /><br />
+    <button id="completePurchase">Finalizar Compra</button>
+    <p style="color: red;" id="status"></p>
+  </div>
+  {{else}}
+  <h2>No hay productos</h2>
+  {{/if}}
+
+</div>
+
+<script src="/js/cart.js"></script>

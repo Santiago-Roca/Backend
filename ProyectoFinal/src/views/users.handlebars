@@ -1,0 +1,38 @@
+<div>
+  <h2>Plataforma de usuarios</h2>
+  <div>
+    <p>User:
+      {{user.name}}
+      <br />
+      Email:
+      {{user.email}}
+      <br />
+    </p>
+    <button id="botonLogout">Logout</button>
+    <button><a style="color: #fff;" href="/menuAdmin">Volver al Menú Admin</a></button>
+  </div>
+
+  {{#if usersDTO}}
+  <h1>Lista de Usuarios</h1>
+  <ul>
+    {{#each usersDTO}}
+    <div>
+      <p style="margin-bottom: 3px;">{{this.name}}
+        <br />
+        <span class="emailUser">{{this.email}}</span>
+        <br />
+        Role:{{this.role}}
+      </p>
+      <button class="btnChange">Change Rol</button>
+      <button class="btnDelete">Eliminar</button>
+      <br />
+    </div>
+    {{/each}}
+  </ul>
+  {{else}}
+  <h2>No hay usuarios registrados</h2>
+  {{/if}}
+
+</div>
+
+<script type="module" src="/js/home.js"></script>
